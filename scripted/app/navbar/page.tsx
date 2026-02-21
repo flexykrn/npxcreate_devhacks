@@ -32,7 +32,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed rounded-4xl w-full top-0 left-0 mx-4 my-4 z-50 bg-gradient-to-r from-[#cfaad8]/30 via-[#934acb]/30 to-[#48229a]/30 backdrop-blur-xl shadow-sm shadow-purple-500/20 border border-white/20">
+      <nav className="fixed rounded-4xl w-full top-0 left-0 m-2 z-50 bg-gradient-to-r from-[#cfaad8]/30 via-[#934acb]/30 to-[#48229a]/30 backdrop-blur-xl shadow-sm shadow-purple-500/20 border border-white/20">
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
