@@ -28,10 +28,19 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  function handleLogout() {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("currentUser");
-    router.push("/login");
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear localStorage
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("userId");
+      router.push("/login");
+    }
   }
 
   return (
@@ -39,7 +48,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
       className={`relative shrink-0 flex flex-col h-full
         bg-linear-to-b from-[#cfaad8]/20 via-[#934acb]/20 to-[#48229a]/20
         backdrop-blur-xl border-r border-white/20 shadow-lg shadow-purple-500/10
-        transition-all duration-300 ease-in-out
+        transition-all duration-300 ease-in-out rounded-xl
         ${collapsed ? "w-17" : "w-56"}`}
     >
       {/* Toggle button */}

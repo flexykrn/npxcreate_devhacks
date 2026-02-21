@@ -14,9 +14,13 @@ import {
 } from "lucide-react";
 
 interface Project {
-  id: string;
+  id: number;
   name: string;
-  createdAt: string;
+  description?: string;
+  owner_id: number;
+  created_at: string;
+  updated_at: string;
+  owner_username?: string;
 }
 
 export default function DashboardPage() {
@@ -25,15 +29,34 @@ export default function DashboardPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Load projects from localStorage
+  // Load projects from API
   useEffect(() => {
-    const savedProjects = localStorage.getItem("projects");
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects));
-    }
+    fetchProjects();
   }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch('/api/projects');
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login');
+          return;
+        }
+        throw new Error('Failed to fetch projects');
+      }
+
+      const data = await response.json();
+      setProjects(data.projects || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -46,28 +69,59 @@ export default function DashboardPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (projectName.trim()) {
-      const newProject: Project = {
-        id: Date.now().toString(),
-        name: projectName.trim(),
-        createdAt: new Date().toISOString(),
-      };
-      
-      const updatedProjects = [newProject, ...projects];
-      setProjects(updatedProjects);
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      
-      setShowDropdown(false);
-      setProjectName("");
-      router.push("/main");
+      try {
+        const response = await fetch('/api/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: projectName.trim() }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create project');
+        }
+
+        const data = await response.json();
+        
+        setShowDropdown(false);
+        setProjectName("");
+        
+        // Refresh projects list
+        await fetchProjects();
+        
+        router.push("/main");
+      } catch (error) {
+        console.error('Error creating project:', error);
+        alert('Failed to create project. Please try again.');
+      }
     }
   };
 
-  const handleDeleteProject = (id: string) => {
-    const updatedProjects = projects.filter((p) => p.id !== id);
-    setProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+  const handleDeleteProject = async (id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!confirm('Are you sure you want to delete this project?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project');
+      }
+
+      // Refresh projects list
+      await fetchProjects();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Failed to delete project. Please try again.');
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -167,14 +221,11 @@ export default function DashboardPage() {
                             <h3 className="font-bold text-gray-900 text-sm line-clamp-1">
                               {project.name}
                             </h3>
-                            <p className="text-xs text-gray-500">{formatDate(project.createdAt)}</p>
+                            <p className="text-xs text-gray-500">{formatDate(project.created_at)}</p>
                           </div>
                         </div>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteProject(project.id);
-                          }}
+                          onClick={(e) => handleDeleteProject(project.id, e)}
                           className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-all duration-200"
                         >
                           <Trash2 className="w-4 h-4" />

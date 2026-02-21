@@ -53,7 +53,7 @@ export default function Navbar() {
 
   const roleOptions = ["Admin", "Editor", "Viewer"];
   
-  const isDashboardPage = pathname === "/dashboard";
+  const isDashboardPage = pathname === "/dashboard" || pathname === "/main" || pathname === "/notebook";
 
   return (
     <>
@@ -141,23 +141,25 @@ export default function Navbar() {
             </div>
 
             {/* Desktop CTA */}
-            <div className="hidden md:flex items-center gap-3">
-              <Link
-                href="/login"
-                className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors duration-200"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                className="group relative inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white rounded-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
-              >
-                <span className="absolute inset-0 bg-linear-to-r from-blue-600 to-violet-600" />
-                <span className="absolute inset-0 bg-linear-to-r from-violet-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10">Get Started</span>
-                <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
-              </Link>
-            </div>
+            {!isDashboardPage && (
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors duration-200"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="group relative inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white rounded-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5"
+                >
+                  <span className="absolute inset-0 bg-linear-to-r from-blue-600 to-violet-600" />
+                  <span className="absolute inset-0 bg-linear-to-r from-violet-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <span className="relative z-10">Get Started</span>
+                  <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -257,22 +259,24 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-gray-200/60">
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-5 py-3 text-sm font-semibold text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-5 py-3 text-sm font-semibold text-white rounded-xl bg-linear-to-r from-blue-600 to-violet-600 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-shadow duration-300"
-            >
-              Get Started
-            </Link>
-          </div>
+          {!isDashboardPage && (
+            <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-gray-200/60">
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full text-center px-5 py-3 text-sm font-semibold text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full text-center px-5 py-3 text-sm font-semibold text-white rounded-xl bg-linear-to-r from-blue-600 to-violet-600 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-shadow duration-300"
+              >
+                Get Started
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>

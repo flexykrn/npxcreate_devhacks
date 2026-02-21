@@ -24,22 +24,42 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
+    setLoading(true)
 
-    if (email !== "user" || password !== "1234") {
-      setError("Invalid username or password.")
-      return
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed')
+        setLoading(false)
+        return
+      }
+
+      // Store user info in localStorage for quick access
+      localStorage.setItem("currentUser", data.user.username)
+      localStorage.setItem("userId", data.user.id)
+      
+      router.push("/dashboard")
+    } catch (err) {
+      setError('An error occurred. Please try again.')
+      setLoading(false)
     }
-
-    localStorage.setItem("isLoggedIn", "true")
-    localStorage.setItem("currentUser", email)
-    router.push("/dashboard")
   }
 
   return (
@@ -55,14 +75,15 @@ export function LoginForm({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Username</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  id="email"
+                  id="username"
                   type="text"
                   placeholder="user"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={loading}
                 />
               </Field>
               <Field>
@@ -81,13 +102,16 @@ export function LoginForm({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                 />
               </Field>
               {error && (
                 <p className="text-sm text-red-500 text-center">{error}</p>
               )}
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? 'Logging in...' : 'Login'}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <a href="/signup" className="underline">

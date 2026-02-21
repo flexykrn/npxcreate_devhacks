@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { motion, useMotionValue, AnimatePresence } from "framer-motion"
 import { Upload, X, FileText, LinkIcon, Sparkles } from "lucide-react"
 
 const colors = ["#cfaad8", "#934acb", "#48229a", "#dd00ee"]
-const names  = ["Source", "Build", "Test", "Deploy"]
+const nodeLinks = ["/notebook", "/notebook", "/notebook", "/notebook"]
+const nodeLabels = ["Dashboard", "Notebook", "Features", "About"]
 const SIZE   = 100
 const GAP    = 150 // centre-to-centre spacing
 
@@ -181,16 +183,20 @@ function SourcePopup({ onClose }: { onClose: () => void }) {
   )
 }
 
-function DragBox({ color, startX, startY, name, showPopup, containerRef, onMove }: {
-  color: string; startX: number; startY: number; name: string
+function DragBox({ color, startX, startY, showPopup, containerRef, onMove, href, label }: {
+  color: string; startX: number; startY: number
   showPopup?: boolean
   containerRef: React.RefObject<HTMLDivElement | null>
   onMove: (x: number, y: number) => void
+  href?: string
+  label?: string
 }) {
+  const router = useRouter()
   const x = useMotionValue(startX)
   const y = useMotionValue(startY)
   const [hovered, setHovered] = useState(false)
   const [popupOpen, setPopupOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -210,6 +216,12 @@ function DragBox({ color, startX, startY, name, showPopup, containerRef, onMove 
     if (showPopup) leaveTimer.current = setTimeout(() => setPopupOpen(false), 400)
   }
 
+  const handleClick = () => {
+    if (!isDragging && href) {
+      router.push(href)
+    }
+  }
+
   return (
     <motion.div
       drag
@@ -218,6 +230,9 @@ function DragBox({ color, startX, startY, name, showPopup, containerRef, onMove 
       dragConstraints={containerRef}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
+      onDragStart={() => setIsDragging(true)}
+      onDragEnd={() => setTimeout(() => setIsDragging(false), 100)}
+      onClick={handleClick}
       whileDrag={{ scale: 1.15, boxShadow: `0 12px 40px ${color}88` }}
       style={{
         x, y,
@@ -225,7 +240,7 @@ function DragBox({ color, startX, startY, name, showPopup, containerRef, onMove 
         width: SIZE, height: SIZE,
         backgroundColor: color,
         borderRadius: "50%",
-        cursor: "grab",
+        cursor: href ? "pointer" : "grab",
         display: "flex", alignItems: "center", justifyContent: "center",
         zIndex: hovered ? 20 : 1,
       }}
@@ -237,14 +252,33 @@ function DragBox({ color, startX, startY, name, showPopup, containerRef, onMove 
       }}
       transition={{ type: "spring", stiffness: 360, damping: 22 }}
     >
-      <span style={{
-        color: "#fff", fontWeight: 700, fontSize: 13, letterSpacing: "0.03em",
-        textShadow: "0 1px 4px rgba(0,0,0,0.35)",
-        pointerEvents: "none", userSelect: "none",
-      }}>
-        {name}
-      </span>
-
+      {label && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ 
+            opacity: hovered && !isDragging ? 1 : 0, 
+            y: hovered && !isDragging ? 0 : 10 
+          }}
+          transition={{ duration: 0.2 }}
+          style={{
+            position: "absolute",
+            bottom: -40,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "rgba(255, 255, 255, 0.95)",
+            padding: "6px 12px",
+            borderRadius: "8px",
+            fontSize: "13px",
+            fontWeight: 600,
+            color: color,
+            whiteSpace: "nowrap",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            pointerEvents: "none",
+          }}
+        >
+          {label}
+        </motion.div>
+      )}
       <AnimatePresence>
         {showPopup && popupOpen && (
           <SourcePopup onClose={() => setPopupOpen(false)} />
@@ -313,12 +347,13 @@ export default function Page() {
         <DragBox
           key={i}
           color={color}
-          name={names[i]}
           showPopup={i === 0}
           containerRef={containerRef}
           startX={initial[i].x}
           startY={initial[i].y}
           onMove={(x, y) => updatePosition(i, x, y)}
+          href={nodeLinks[i]}
+          label={nodeLabels[i]}
         />
       ))}
     </div>
