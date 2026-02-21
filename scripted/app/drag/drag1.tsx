@@ -6,7 +6,6 @@ export default function Drag1() {
     return <motion.div drag style={box} />
 }
 
-
 const box = {
     width: 100,
     height: 100,

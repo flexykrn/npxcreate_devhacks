@@ -7,6 +7,7 @@ export default function Drag2() {
 }
 
 
+
 const box = {
     width: 100,
     height: 100,

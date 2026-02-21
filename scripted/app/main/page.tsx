@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, useMotionValue } from "framer-motion"
 
 const colors = ["#cfaad8", "#934acb", "#48229a", "#dd00ee"]
+const names  = ["Source", "Build", "Test", "Deploy"]
 const initial = [
   { x: 100, y: 150 },
   { x: 250, y: 150 },
@@ -12,10 +13,11 @@ const initial = [
 ]
 const SIZE = 100
 
-function DragBox({ color, startX, startY, onMove }: {
+function DragBox({ color, startX, startY, name, onMove }: {
   color: string
   startX: number
   startY: number
+  name: string
   onMove: (x: number, y: number) => void
 }) {
   const x = useMotionValue(startX)
@@ -30,6 +32,8 @@ function DragBox({ color, startX, startY, onMove }: {
   return (
     <motion.div
       drag
+      dragMomentum={false}
+      dragElastic={0}
       style={{
         x, y,
         position: "absolute",
@@ -40,8 +44,21 @@ function DragBox({ color, startX, startY, onMove }: {
         backgroundColor: color,
         borderRadius: 10,
         cursor: "grab",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
-    />
+    >
+      <span style={{
+        color: "#fff",
+        fontWeight: 700,
+        fontSize: 13,
+        letterSpacing: "0.03em",
+        textShadow: "0 1px 4px rgba(0,0,0,0.35)",
+        pointerEvents: "none",
+        userSelect: "none",
+      }}>{name}</span>
+    </motion.div>
   )
 }
 
@@ -58,8 +75,6 @@ export default function Page() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-
-      {/* Lines: perfectly center-to-center */}
       <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
         {positions.map((pos, i) => {
           if (i === positions.length - 1) return null
@@ -79,11 +94,11 @@ export default function Page() {
         })}
       </svg>
 
-      {/* Boxes */}
       {colors.map((color, i) => (
         <DragBox
           key={i}
           color={color}
+          name={names[i]}
           startX={initial[i].x}
           startY={initial[i].y}
           onMove={(x, y) => updatePosition(i, x, y)}
