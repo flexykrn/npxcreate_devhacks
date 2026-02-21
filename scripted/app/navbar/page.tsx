@@ -47,7 +47,7 @@ export default function Navbar() {
                 <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <span className="text-xl font-extrabold tracking-tight bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Scripted
+                ScriptED
               </span>
             </Link>
 

@@ -1,0 +1,15 @@
+"use client"
+
+import { motion } from "motion/react"
+
+export default function Drag4() {
+    return <motion.div drag style={box} />
+}
+
+
+const box = {
+    width: 200,
+    height: 200,
+    backgroundColor: "#dd00ee",
+    borderRadius: 10,
+}

@@ -19,7 +19,7 @@ export default function Page() {
   variant="link"
   className="text-4xl rounded-3xl border-2 border-black flex items-center justify-self-center mt-12 p-8 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#cfaad8] hover:via-[#934acb] hover:to-[#48229a] hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-purple-500/30"
 >
-  <Link href="/">Get Started</Link>
+  <Link href="/main">Get Started</Link>
 </Button>
 
      </div>
