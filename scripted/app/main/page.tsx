@@ -10,7 +10,7 @@ const initial = [
   { x: 400, y: 150 },
   { x: 550, y: 150 },
 ]
-const SIZE = 50
+const SIZE = 100
 
 function DragBox({ color, startX, startY, onMove }: {
   color: string
