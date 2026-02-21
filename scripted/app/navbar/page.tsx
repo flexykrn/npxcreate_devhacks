@@ -12,10 +12,13 @@ import {
   ArrowRight,
   Menu,
   X,
+  ChevronDown,
 } from "lucide-react";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("Admin");
   const pathname = usePathname();
 
   // Lock body scroll when mobile menu is open
@@ -24,11 +27,33 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [isMobileMenuOpen]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isRoleDropdownOpen && !target.closest('.role-dropdown-container')) {
+        setIsRoleDropdownOpen(false);
+      }
+    };
+
+    if (isRoleDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isRoleDropdownOpen]);
+
   const navLinks = [
     { name: "Home", href: "/", icon: Home },
     { name: "Features", href: "/features", icon: Layers },
     { name: "About", href: "/about", icon: Users },
   ];
+
+  const roleOptions = ["Admin", "Editor", "Viewer"];
+  
+  const isDashboardPage = pathname === "/dashboard";
 
   return (
     <>
@@ -53,30 +78,66 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center">
-              <div className="flex items-center gap-1 bg-gray-100/80 rounded-full px-1.5 py-1">
-                {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className={`relative px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
-                        isActive
-                          ? "text-white"
-                          : "text-gray-500 hover:text-gray-900"
-                      }`}
-                    >
-                      {isActive && (
-                        <span className="absolute inset-0 rounded-full bg-linear-to-r from-blue-600 to-violet-600 shadow-md shadow-blue-500/25 animate-[fadeIn_0.3s_ease]" />
-                      )}
-                      <span className="relative z-10 flex items-center gap-1.5">
-                        <link.icon className="w-3.5 h-3.5" />
-                        {link.name}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
+              {isDashboardPage ? (
+                // Role Dropdown for Dashboard Page
+                <div className="relative role-dropdown-container">
+                  <button
+                    onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+                    className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100/80 rounded-full hover:bg-gray-200/80 transition-all duration-200"
+                  >
+                    <Users className="w-4 h-4" />
+                    Role: {selectedRole}
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {isRoleDropdownOpen && (
+                    <div className="absolute top-full mt-2 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50">
+                      {roleOptions.map((role) => (
+                        <button
+                          key={role}
+                          onClick={() => {
+                            setSelectedRole(role);
+                            setIsRoleDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors duration-150 ${
+                            selectedRole === role
+                              ? "bg-linear-to-r from-blue-600 to-violet-600 text-white"
+                              : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          {role}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // Regular Navigation Links for Other Pages
+                <div className="flex items-center gap-1 bg-gray-100/80 rounded-full px-1.5 py-1">
+                  {navLinks.map((link) => {
+                    const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        className={`relative px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                          isActive
+                            ? "text-white"
+                            : "text-gray-500 hover:text-gray-900"
+                        }`}
+                      >
+                        {isActive && (
+                          <span className="absolute inset-0 rounded-full bg-linear-to-r from-blue-600 to-violet-600 shadow-md shadow-blue-500/25 animate-[fadeIn_0.3s_ease]" />
+                        )}
+                        <span className="relative z-10 flex items-center gap-1.5">
+                          <link.icon className="w-3.5 h-3.5" />
+                          {link.name}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Desktop CTA */}
@@ -145,31 +206,55 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex flex-col gap-1">
-            {navLinks.map((link, i) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
-                    isActive
-                      ? "bg-linear-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-500/20"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
-                  style={{
-                    transitionDelay: isMobileMenuOpen ? `${i * 50}ms` : "0ms",
-                    transform: isMobileMenuOpen
-                      ? "translateX(0)"
-                      : "translateX(20px)",
-                    opacity: isMobileMenuOpen ? 1 : 0,
-                  }}
-                >
-                  <link.icon className="w-5 h-5" />
-                  {link.name}
-                </Link>
-              );
-            })}
+            {isDashboardPage ? (
+              // Role Dropdown for Dashboard Page (Mobile)
+              <div className="mb-4">
+                <div className="text-xs font-semibold text-gray-500 mb-2 px-4">SELECT ROLE</div>
+                {roleOptions.map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => {
+                      setSelectedRole(role);
+                    }}
+                    className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
+                      selectedRole === role
+                        ? "bg-linear-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-500/20"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
+                  >
+                    <Users className="w-5 h-5" />
+                    {role}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              // Regular Navigation Links for Other Pages (Mobile)
+              navLinks.map((link, i) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
+                      isActive
+                        ? "bg-linear-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-500/20"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
+                    style={{
+                      transitionDelay: isMobileMenuOpen ? `${i * 50}ms` : "0ms",
+                      transform: isMobileMenuOpen
+                        ? "translateX(0)"
+                        : "translateX(20px)",
+                      opacity: isMobileMenuOpen ? 1 : 0,
+                    }}
+                  >
+                    <link.icon className="w-5 h-5" />
+                    {link.name}
+                  </Link>
+                );
+              })
+            )}
           </div>
 
           <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-gray-200/60">

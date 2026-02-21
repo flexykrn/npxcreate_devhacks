@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
-  GitBranch,
-  FileText,
-  Settings,
+  Home,
+  Layers,
+  Users,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -14,9 +14,9 @@ import {
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Pipeline", href: "/pipeline", icon: GitBranch },
-  { name: "Files", href: "/drag", icon: FileText },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Home", href: "/", icon: Home },
+  { name: "Features", href: "/features", icon: Layers },
+  { name: "About", href: "/about", icon: Users },
 ];
 
 interface SidebarProps {
