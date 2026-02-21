@@ -16,14 +16,7 @@ import {
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -39,15 +32,8 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-xl shadow-lg shadow-black/3 border-b border-gray-200/60"
-            : "bg-white border-b border-gray-100"
-        }`}
-      >
-        {/* Top gradient accent line */}
-        <div className="absolute top-0 inset-x-0 h-0.5 bg-linear-to-r from-blue-500 via-violet-500 to-fuchsia-500" />
+      <nav className="fixed rounded-4xl w-full top-0 left-0 mx-4 my-4 z-50 bg-gradient-to-r from-[#cfaad8]/30 via-[#934acb]/30 to-[#48229a]/30 backdrop-blur-xl shadow-sm shadow-purple-500/20 border border-white/20">
+
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -153,7 +139,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`fixed top-16.5 right-0 z-50 w-72 h-[calc(100vh-66px)] bg-white/95 backdrop-blur-xl border-l border-gray-200/60 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden ${
+       className={`fixed top-16.5 right-0 z-50 w-72 h-[calc(100vh-66px)] bg-gradient-to-b from-[#cfaad8]/40 via-[#934acb]/40 to-[#48229a]/40 backdrop-blur-xl border-l border-white/20 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -188,7 +174,7 @@ export default function Navbar() {
 
           <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-gray-200/60">
             <Link
-              href="/login"gi
+              href="/login"
               onClick={() => setIsMobileMenuOpen(false)}
               className="w-full text-center px-5 py-3 text-sm font-semibold text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
             >
