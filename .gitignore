@@ -1,0 +1,37 @@
+# ── Secrets ──────────────────────────────
+.env
+.env.*
+backend/.env
+backend/.env.*
+
+# ── Python ───────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# ── Databases ────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+backend/script_store.db
+
+# ── Logs ─────────────────────────────────
+*.log
+backend/*.log
+
+# ── Temp uploads ─────────────────────────
+backend/temp_uploads/
+backend/models/
+
+# ── Node ─────────────────────────────────
+node_modules/
+
+# ── OS ───────────────────────────────────
+.DS_Store
+Thumbs.db
