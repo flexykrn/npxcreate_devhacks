@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useApp } from "@/lib/AppContext";
+import { updateNode } from "@/lib/localDb";
+import { ArrowLeft } from "lucide-react";
 
 const STICKERS = ["⭐","🌈","❤️","🎯","💡","🔥","✅","📌","🎵","🦋","🌸","🏆","✨","🎨","🚀"];
 const INK_COLORS = [
@@ -19,17 +23,66 @@ type PageData = { title: string; text: string; stickers: Sticker[] };
 const emptyPage = (): PageData => ({ title: "", text: "", stickers: [] });
 
 export default function NotebookPage() {
+  const router = useRouter();
+  const { currentProject, currentNodeId, triggerRefresh } = useApp();
   const [pages, setPages] = useState<PageData[]>(Array.from({ length: TOTAL_PAGES }, emptyPage));
   const [currentPage, setCurrentPage] = useState(0);
   const [inkColor, setInkColor] = useState("#1a237e");
   const [stickerIndex, setStickerIndex] = useState(0);
   const [dateStr, setDateStr] = useState("");
   const [dragging, setDragging] = useState<{ id: number; ox: number; oy: number } | null>(null);
+  const [nodeTitle, setNodeTitle] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const pageInnerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const page = pages[currentPage];
+
+  if (!currentProject || !currentNodeId) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fdf8ff' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📓</div>
+          <div style={{ fontSize: 18, color: '#6b7280' }}>Loading notebook...</div>
+        </div>
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    if (currentProject && currentNodeId && !isLoaded) {
+      const node = currentProject.nodes.find(n => n.id === currentNodeId);
+      if (node) {
+        setNodeTitle(node.title);
+        try {
+          if (node.content && node.content.trim()) {
+            const parsedPages = JSON.parse(node.content);
+            if (Array.isArray(parsedPages) && parsedPages.length > 0) {
+              setPages(parsedPages);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse node content:", e);
+        }
+        setIsLoaded(true);
+      }
+    }
+  }, [currentProject, currentNodeId, isLoaded]);
+
+  useEffect(() => {
+    if (currentProject && currentNodeId && isLoaded) {
+      const saveTimeout = setTimeout(() => {
+        updateNode(currentProject.id, currentNodeId, {
+          content: JSON.stringify(pages),
+          updatedAt: new Date().toISOString(),
+        });
+        triggerRefresh();
+      }, 500); // Debounce saves by 500ms
+
+      return () => clearTimeout(saveTimeout);
+    }
+  }, [pages, currentProject, currentNodeId, isLoaded, triggerRefresh]);
 
   const updatePage = (partial: Partial<PageData>) => {
     setPages(prev => prev.map((p, i) => i === currentPage ? { ...p, ...partial } : p));
@@ -41,7 +94,6 @@ export default function NotebookPage() {
     }));
   }, []);
 
-  // Auto-expand textarea
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
@@ -49,7 +101,6 @@ export default function NotebookPage() {
     ta.style.height = Math.max(600, ta.scrollHeight) + "px";
   }, [page.text, currentPage]);
 
-  // Re-focus textarea on page change
   useEffect(() => {
     setTimeout(() => textareaRef.current?.focus(), 50);
   }, [currentPage]);
@@ -113,13 +164,31 @@ export default function NotebookPage() {
     >
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Schoolbell&family=Patrick+Hand&display=swap');`}</style>
 
+      {/* ── Back to Tree Button ── */}
+      <div className="w-full max-w-215 mb-4">
+        <button
+          onClick={() => {
+            if (currentProject) {
+              router.push(`/project/${currentProject.id}/tree`)
+            } else {
+              router.push('/dashboard')
+            }
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all shadow-md"
+          style={{ fontFamily: "Patrick Hand, cursive", fontSize: "1rem" }}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Tree
+        </button>
+      </div>
+
       {/* ── Top Bar ── */}
-      <div className="w-full max-w-[860px] flex items-center justify-between mb-6">
+      <div className="w-full max-w-215 flex items-center justify-between mb-6">
         <div
           className="text-white px-4 py-1.5 rounded shadow-md select-none"
           style={{ background: "#e53935", fontFamily: "Schoolbell, cursive", fontSize: "1.4rem", letterSpacing: 1 }}
         >
-          📓 write Your Script
+          📓 {nodeTitle || "Untitled Node"}
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -151,7 +220,7 @@ export default function NotebookPage() {
 
       {/* ── Notebook ── */}
       <div
-        className="w-full max-w-[860px] rounded-lg overflow-hidden"
+        className="w-full max-w-215 rounded-lg overflow-hidden"
         style={{ boxShadow: "6px 6px 32px rgba(0,0,0,0.18)" }}
       >
         <div

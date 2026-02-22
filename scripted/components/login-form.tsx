@@ -18,12 +18,14 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useApp } from "@/lib/AppContext"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const { setUser } = useApp()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -51,9 +53,18 @@ export function LoginForm({
         return
       }
 
-      // Store user info in localStorage for quick access
+      const userData = {
+        id: data.user.id,
+        name: data.user.username,
+        email: data.user.email,
+        role: 'owner' as const,
+      }
+
+      localStorage.setItem("scripted_user", JSON.stringify(userData))
       localStorage.setItem("currentUser", data.user.username)
       localStorage.setItem("userId", data.user.id)
+      
+      setUser(userData)
       
       router.push("/dashboard")
     } catch (err) {

@@ -17,9 +17,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useApp } from "@/lib/AppContext"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter()
+  const { setUser } = useApp()
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -81,9 +83,18 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         return
       }
 
-      // Store user info in localStorage for quick access
+      const userData = {
+        id: loginData.user.id,
+        name: loginData.user.username,
+        email: loginData.user.email,
+        role: 'owner' as const,
+      }
+
+      localStorage.setItem("scripted_user", JSON.stringify(userData))
       localStorage.setItem("currentUser", loginData.user.username)
       localStorage.setItem("userId", loginData.user.id)
+      
+      setUser(userData)
       
       router.push("/dashboard")
     } catch (err) {

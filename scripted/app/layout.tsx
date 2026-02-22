@@ -1,5 +1,7 @@
 import "./globals.css";
 import Navbar from "./navbar/page";
+import Sidebar from "@/components/sidebar";
+import { AppProvider } from "@/lib/AppContext";
 
 export default function RootLayout({
   children,
@@ -9,8 +11,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <AppProvider>
+          <Navbar />
+          <Sidebar />
+          {children}
+        </AppProvider>
       </body>
     </html>
   );
