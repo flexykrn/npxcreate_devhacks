@@ -26,6 +26,8 @@ export type Project = {
   lastOpened: string
   isFavorite: boolean
   template?: string
+  deleted?: boolean
+  deletedAt?: string
 }
 
 export type User = {
@@ -66,6 +68,12 @@ export const updateUser = (user: Partial<User>): void => {
 }
 
 export const getAllProjects = (): Project[] => {
+  const projects = localStorage.getItem('scripted_projects')
+  const allProjects = projects ? JSON.parse(projects) : []
+  return allProjects.filter((p: Project) => !p.deleted)
+}
+
+export const getAllProjectsIncludingDeleted = (): Project[] => {
   const projects = localStorage.getItem('scripted_projects')
   return projects ? JSON.parse(projects) : []
 }
@@ -124,7 +132,42 @@ export const updateProject = (id: string, updates: Partial<Project>): void => {
 }
 
 export const deleteProject = (id: string): void => {
-  const projects = getAllProjects()
+  const projects = getAllProjectsIncludingDeleted()
+  const index = projects.findIndex(p => p.id === id)
+  
+  if (index !== -1) {
+    projects[index] = {
+      ...projects[index],
+      deleted: true,
+      deletedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    localStorage.setItem('scripted_projects', JSON.stringify(projects))
+  }
+}
+
+export const getDeletedProjects = (): Project[] => {
+  const projects = getAllProjectsIncludingDeleted()
+  return projects.filter(p => p.deleted === true)
+}
+
+export const restoreProject = (id: string): void => {
+  const projects = getAllProjectsIncludingDeleted()
+  const index = projects.findIndex(p => p.id === id)
+  
+  if (index !== -1) {
+    projects[index] = {
+      ...projects[index],
+      deleted: false,
+      deletedAt: undefined,
+      updatedAt: new Date().toISOString(),
+    }
+    localStorage.setItem('scripted_projects', JSON.stringify(projects))
+  }
+}
+
+export const permanentlyDeleteProject = (id: string): void => {
+  const projects = getAllProjectsIncludingDeleted()
   const filtered = projects.filter(p => p.id !== id)
   localStorage.setItem('scripted_projects', JSON.stringify(filtered))
 }

@@ -107,11 +107,13 @@ export default function DashboardPage() {
 
   const handleCreateProject = () => {
     if (projectTitle.trim()) {
-      createProject(projectTitle.trim(), projectDescription.trim());
+      const newProject = createProject(projectTitle.trim(), projectDescription.trim());
       setShowCreateModal(false);
       setProjectTitle("");
       setProjectDescription("");
+      setCurrentProject(newProject);
       triggerRefresh();
+      router.push('/main');
     }
   };
 
@@ -132,7 +134,7 @@ export default function DashboardPage() {
 
   const handleOpenProject = (project: Project) => {
     setCurrentProject(project);
-    router.push(`/project/${project.id}/tree`);
+    router.push('/main');
   };
 
   const formatDate = (dateString: string) => {
@@ -148,8 +150,21 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#f5eeff] via-white to-[#ede9ff] pt-20 pb-8 pl-72 pr-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-[#f5eeff] via-white to-[#ede9ff] pt-20 pb-8 pl-72 pr-8 relative overflow-hidden">
+      {/* Decorative Gradients from Edges */}
+      {/* Top Left */}
+      <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-linear-to-br from-purple-500/20 via-violet-400/10 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      
+      {/* Top Right */}
+      <div className="fixed top-0 right-0 w-[450px] h-[450px] bg-linear-to-bl from-blue-500/20 via-purple-400/10 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      
+      {/* Bottom Left */}
+      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] bg-linear-to-tr from-violet-600/25 via-purple-500/15 to-transparent rounded-full blur-3xl opacity-60 pointer-events-none"></div>
+      
+      {/* Bottom Right */}
+      <div className="fixed bottom-0 right-0 w-[450px] h-[450px] bg-linear-to-tl from-purple-600/20 via-blue-500/10 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Dashboard</h1>
@@ -166,7 +181,7 @@ export default function DashboardPage() {
               placeholder="Search projects..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all duration-200 text-sm"
+              className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 bg-white/70 backdrop-blur-sm focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all duration-200 text-sm"
             />
           </div>
 

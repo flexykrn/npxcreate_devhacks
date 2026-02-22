@@ -15,7 +15,6 @@ import {
   ChevronRight,
   Search,
   Bell,
-  Settings,
   LogOut,
   User,
 } from "lucide-react";
@@ -52,8 +51,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Features", href: "/features", icon: Layers },
-    { name: "About", href: "/about", icon: Users },
+    { name: "Features", href: "/#features", icon: Layers },
+    { name: "About", href: "/#about", icon: Users },
   ];
   
   const isLoggedIn = !!user;
@@ -89,14 +88,14 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link
-              href={isLoggedIn ? "/dashboard" : "/"}
+              href="/"
               className="group flex items-center gap-2.5 select-none"
             >
               <div className="relative w-9 h-9 rounded-xl bg-linear-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow duration-300">
                 <Sparkles className="w-5 h-5 text-white" />
                 <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              <span className="text-xl font-extrabold tracking-tight bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              <span className="text-xl font-extrabold tracking-tight text-gray-900">
                 ScriptED
               </span>
             </Link>
@@ -161,12 +160,12 @@ export default function Navbar() {
               {isLoggedIn ? (
                 <>
                   {/* Search Icon */}
-                  <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-all duration-200">
+                  <button className="p-2 text-black hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-all duration-200">
                     <Search className="w-5 h-5" />
                   </button>
                   
                   {/* Notifications */}
-                  <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-all duration-200">
+                  <button className="relative p-2 text-black hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-all duration-200">
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                   </button>
@@ -190,26 +189,6 @@ export default function Navbar() {
                           <p className="text-sm font-semibold text-gray-900">{user?.name || 'User'}</p>
                           <p className="text-xs text-gray-500">{user?.email || 'user@example.com'}</p>
                         </div>
-                        <button
-                          onClick={() => {
-                            setIsUserDropdownOpen(false);
-                            router.push('/profile');
-                          }}
-                          className="w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                        >
-                          <User className="w-4 h-4" />
-                          Profile
-                        </button>
-                        <button
-                          onClick={() => {
-                            setIsUserDropdownOpen(false);
-                            router.push('/settings');
-                          }}
-                          className="w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Settings
-                        </button>
                         <div className="border-t border-gray-200">
                           <button
                             onClick={() => {
@@ -319,14 +298,14 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-black hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
                 >
                   <Search className="w-5 h-5" />
                   Search
                 </button>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-black hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
                 >
                   <Bell className="w-5 h-5" />
                   Notifications
@@ -334,22 +313,6 @@ export default function Navbar() {
               </div>
 
               <div className="mt-auto flex flex-col gap-1 pt-6 border-t border-gray-200/60">
-                <Link
-                  href="/profile"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
-                >
-                  <User className="w-5 h-5" />
-                  Profile
-                </Link>
-                <Link
-                  href="/settings"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
-                >
-                  <Settings className="w-5 h-5" />
-                  Settings
-                </Link>
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);

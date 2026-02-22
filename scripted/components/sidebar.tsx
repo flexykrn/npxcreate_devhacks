@@ -7,7 +7,6 @@ import {
   Home,
   FolderOpen,
   Star,
-  Search,
   Settings,
   Trash2,
   ChevronDown,
@@ -16,16 +15,17 @@ import {
   FileText,
 } from "lucide-react";
 import { useApp } from "@/lib/AppContext";
-import { getRecentProjects, getFavoriteProjects, type Project } from "@/lib/localDb";
+import { getRecentProjects, getFavoriteProjects, getDeletedProjects, type Project } from "@/lib/localDb";
 
 export default function Sidebar() {
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true);
   const [recentProjects, setRecentProjects] = useState<Project[]>([]);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([]);
+  const [deletedCount, setDeletedCount] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
-  const { currentProject, refreshTrigger } = useApp();
+  const { currentProject, setCurrentProject, refreshTrigger } = useApp();
 
   useEffect(() => {
     loadProjects();
@@ -34,15 +34,18 @@ export default function Sidebar() {
   const loadProjects = () => {
     const recent = getRecentProjects(5);
     const favorites = getFavoriteProjects();
+    const deleted = getDeletedProjects();
     setRecentProjects(recent);
     setFavoriteProjects(favorites);
+    setDeletedCount(deleted.length);
   };
 
   const shouldShowSidebar = 
     pathname === '/dashboard' || 
     pathname?.startsWith('/project/') ||
     pathname === '/main' ||
-    pathname === '/notebook';
+    pathname === '/notebook' ||
+    pathname === '/recycle-bin';
 
   if (!shouldShowSidebar) {
     return null;
@@ -54,12 +57,6 @@ export default function Sidebar() {
       href: "/dashboard",
       icon: Home,
       isActive: pathname === '/dashboard',
-    },
-    {
-      name: "Search",
-      href: "/search",
-      icon: Search,
-      isActive: pathname === '/search',
     },
     {
       name: "Settings",
@@ -92,6 +89,15 @@ export default function Sidebar() {
             >
               <item.icon className="w-5 h-5" />
               {item.name}
+              {item.name === "Recycle Bin" && deletedCount > 0 && (
+                <span className={`ml-auto px-2 py-0.5 text-xs font-semibold rounded-full ${
+                  item.isActive 
+                    ? "bg-white/20 text-white" 
+                    : "bg-gray-200 text-gray-700"
+                }`}>
+                  {deletedCount}
+                </span>
+              )}
             </Link>
           ))}
         </div>
@@ -117,10 +123,13 @@ export default function Sidebar() {
             <div className="mt-2 space-y-1">
               {recentProjects.length > 0 ? (
                 recentProjects.map((project) => (
-                  <Link
+                  <div
                     key={project.id}
-                    href={`/project/${project.id}/tree`}
-                    className={`group flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
+                    onClick={() => {
+                      setCurrentProject(project);
+                      router.push('/main');
+                    }}
+                    className={`group flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all duration-200 cursor-pointer ${
                       currentProject?.id === project.id
                         ? "bg-white/50 text-blue-600 font-medium"
                         : "text-gray-600 hover:bg-white/40 hover:text-gray-900"
@@ -131,7 +140,7 @@ export default function Sidebar() {
                     {project.isFavorite && (
                       <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                     )}
-                  </Link>
+                  </div>
                 ))
               ) : (
                 <div className="px-4 py-3 text-xs text-gray-500 text-center">
@@ -171,10 +180,13 @@ export default function Sidebar() {
             <div className="mt-2 space-y-1">
               {favoriteProjects.length > 0 ? (
                 favoriteProjects.slice(0, 5).map((project) => (
-                  <Link
+                  <div
                     key={project.id}
-                    href={`/project/${project.id}/tree`}
-                    className={`group flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
+                    onClick={() => {
+                      setCurrentProject(project);
+                      router.push('/main');
+                    }}
+                    className={`group flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all duration-200 cursor-pointer ${
                       currentProject?.id === project.id
                         ? "bg-white/50 text-blue-600 font-medium"
                         : "text-gray-600 hover:bg-white/40 hover:text-gray-900"
@@ -183,7 +195,7 @@ export default function Sidebar() {
                     <FileText className="w-4 h-4 shrink-0" />
                     <span className="truncate flex-1">{project.title}</span>
                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  </Link>
+                  </div>
                 ))
               ) : (
                 <div className="px-4 py-3 text-xs text-gray-500 text-center">
