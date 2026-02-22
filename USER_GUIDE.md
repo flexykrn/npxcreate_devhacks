@@ -487,13 +487,3 @@ npm install
 
 ---
 
-## 📞 Support
-
-- **GitHub Issues**: [Your Repo]
-- **Email**: your-email@example.com
-- **Discord**: [Your Server]
-
----
-
-**Last Updated**: 2026-02-22  
-**Version**: 2.0.0 (Groq Pipeline)
