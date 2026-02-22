@@ -75,7 +75,7 @@ export default function Page() {
                     animation: isDancing ? 'dance 0.6s ease-in-out' : 'none',
                   }}
                 >
-                  ScriptED
+                  ScriptED📑
                 </h1>
 
                 {/* Branch breakdown */}

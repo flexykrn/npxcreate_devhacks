@@ -23,9 +23,36 @@ import { useApp } from "@/lib/AppContext";
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
   const router = useRouter();
   const { user, setUser, currentProject, setCurrentProject, setCurrentNodeId } = useApp();
+
+  // Track which section is in view for hash-based nav links
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const sectionIds = ["features", "about"];
+    const observers: IntersectionObserver[] = [];
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { threshold: 0.4 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    // top of page = home active
+    const onScroll = () => {
+      if (window.scrollY < 200) setActiveSection("");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observers.forEach((o) => o.disconnect());
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
@@ -130,7 +157,10 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-1 bg-gray-100/80 rounded-full px-1.5 py-1">
                   {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
+                    const hash = link.href.includes("#") ? link.href.split("#")[1] : "";
+                    const isActive = hash
+                      ? activeSection === hash
+                      : pathname === link.href && activeSection === "";
                     return (
                       <Link
                         key={link.name}
@@ -330,7 +360,10 @@ export default function Navbar() {
             <>
               <div className="flex flex-col gap-1">
                 {navLinks.map((link, i) => {
-                  const isActive = pathname === link.href;
+                  const hash = link.href.includes("#") ? link.href.split("#")[1] : "";
+                  const isActive = hash
+                    ? activeSection === hash
+                    : pathname === link.href && activeSection === "";
                   return (
                     <Link
                       key={link.name}
