@@ -1,0 +1,45 @@
+{
+  "session_id": "e447fa64-5046-45b1-8d44-ea3dfc408904",
+  "created_at": "2026-02-21T23:19:40.151060",
+  "updated_at": "2026-02-21T23:21:41.337208",
+  "status": "completed",
+  "raw_script": "## Error Type\r\nConsole Error\r\n\r\n## Error Message\r\n'ContextManager' object has no attribute 'create_context'\r\n\r\n\r\n    at processScriptStage1 (lib/api.ts:76:11)\r\n    at async handleConfirm (file://D:/SEM6/npxcreate_devhacks/scripted/.next/dev/static/chunks/_742c23ed._.js:160:32)\r\n\r\n## Code Frame\r\n  74 |       ? error.detail \r\n  75 |       : JSON.stringify(error.detail || error);\r\n> 76 |     throw new Error(errorMessage || `API error: ${response.statusText}`);\r\n     |           ^\r\n  77 |   }\r\n  78 |\r\n  79 |   return response.json();\r\n\r\nNext.js version: 16.1.6 (Turbopack)",
+  "tone_target": "Dramatic",
+  "product_context": null,
+  "scene_image_path": null,
+  "parsed_structure": null,
+  "embeddings": null,
+  "analysis_results": null,
+  "enhanced_dialogues": null,
+  "final_screenplay": "Sure! Here is the updated screenplay with the visual description integrated:\n\nFADE IN:\n\nINT. FARMING TECHNOLOGY OFFICE - DAY\n\nWe see JEN (28), a determined and tech-savvy farmer, sitting in front of a computer. She clicks through various sections on her screen.\n\nJen's eyes scan the digital interface of a farming application displaying various analytics. The background is dominated by shades of green and white, symbolizing growth and clarity.\n\nAs she navigates through different sections, there's an emphasis on numerical data such as prices, consumption rates, and maintenance schedules for irrigation systems. Each element is clearly laid out with icons that suggest functionality related to agricultural optimization.\n\nJen studies the screen intently, her brow furrowed in concentration. She types notes on a pad of paper beside her.\n\nJEN\n(into phone)\nI'm telling you, John, I need those crop yields up 15% by next season. Can we hack it?\n\nJohn's voice comes through the speaker, calm and reassuring.\n\nJOHN (V.O.)\nI've got some data that might interest you, Jen. Let me pull it up...\n\nJen nods to herself as she waits for John to share his findings. She takes a sip from her water bottle, her eyes still fixed on the screen.\n\nFADE OUT.",
+  "stage1_output": "I can't fulfill this request. I am unable to create a screenplay in industry standard format from raw text as it would require more information about the story, characters, and dialogue.",
+  "stage2_output": "Sure! Here is the updated screenplay with the visual description integrated:\n\nFADE IN:\n\nINT. FARMING TECHNOLOGY OFFICE - DAY\n\nWe see JEN (28), a determined and tech-savvy farmer, sitting in front of a computer. She clicks through various sections on her screen.\n\nJen's eyes scan the digital interface of a farming application displaying various analytics. The background is dominated by shades of green and white, symbolizing growth and clarity.\n\nAs she navigates through different sections, there's an emphasis on numerical data such as prices, consumption rates, and maintenance schedules for irrigation systems. Each element is clearly laid out with icons that suggest functionality related to agricultural optimization.\n\nJen studies the screen intently, her brow furrowed in concentration. She types notes on a pad of paper beside her.\n\nJEN\n(into phone)\nI'm telling you, John, I need those crop yields up 15% by next season. Can we hack it?\n\nJohn's voice comes through the speaker, calm and reassuring.\n\nJOHN (V.O.)\nI've got some data that might interest you, Jen. Let me pull it up...\n\nJen nods to herself as she waits for John to share his findings. She takes a sip from her water bottle, her eyes still fixed on the screen.\n\nFADE OUT.",
+  "visual_description": "\"The digital interface of a farming application displays various analytics. The background is dominated by shades of green and white, symbolizing growth and clarity.\n\nAs the user navigates through different sections, there's an emphasis on numerical data such as prices, consumption rates, and maintenance schedules for irrigation systems. Each element is clearly laid out with icons that suggest functionality related to agricultural optimization.\"\n\nSCENE CONTEXT: what it describes\n\nThis scene captures a moment of information gathering within the realm of farming technology. The user interacts with visual elements like charts, graphs, and numbers pertinent to managing crop yields efficiently using AI-assisted insights.\n\nDescribing this as part of an action line would be fitting for integrating into screenplay format where such details are essential in showcasing how modern tech aids traditional agriculture practices.",
+  "model_used_stage1": "llama3.2:latest",
+  "model_used_stage2": "minicpm-v:latest",
+  "image_path": "temp_uploads\\e447fa64-5046-45b1-8d44-ea3dfc408904_WhatsApp Image 2026-01-31 at 10.25.33 PM.jpeg",
+  "pipeline_history": [
+    {
+      "stage": "stage1_director",
+      "timestamp": "2026-02-21T23:19:44.884459",
+      "output_keys": [
+        "stage1_output",
+        "model_used_stage1",
+        "status"
+      ]
+    },
+    {
+      "stage": "stage2_vision",
+      "timestamp": "2026-02-21T23:21:41.337184",
+      "output_keys": [
+        "stage2_output",
+        "visual_description",
+        "model_used_stage2",
+        "image_path",
+        "final_screenplay",
+        "status"
+      ]
+    }
+  ],
+  "errors": []
+}

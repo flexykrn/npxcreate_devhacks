@@ -1,0 +1,45 @@
+{
+  "session_id": "35cbfc75-9798-4ccf-9646-c1298b7be57c",
+  "created_at": "2026-02-21T23:25:58.626849",
+  "updated_at": "2026-02-21T23:27:13.301498",
+  "status": "completed",
+  "raw_script": "state the image",
+  "tone_target": "Dramatic",
+  "product_context": null,
+  "scene_image_path": null,
+  "parsed_structure": null,
+  "embeddings": null,
+  "analysis_results": null,
+  "enhanced_dialogues": null,
+  "final_screenplay": "I don't see any original screenplay text provided. Please share the raw text of your screenplay, and I'll be happy to assist you in integrating the visual description into the appropriate scene.\n\nOnce I receive the screenplay text, I will update it with the requested visual description while maintaining the overall tone and narrative of the script.",
+  "stage1_output": "I'm ready to enhance your screenplay. Please provide the raw text, and I'll transform it into a polished, industry-standard script with dramatic tone.\n\nPlease go ahead and share the original screenplay text.",
+  "stage2_output": "I don't see any original screenplay text provided. Please share the raw text of your screenplay, and I'll be happy to assist you in integrating the visual description into the appropriate scene.\n\nOnce I receive the screenplay text, I will update it with the requested visual description while maintaining the overall tone and narrative of the script.",
+  "visual_description": "INT. NIGHTTIME INTERIOR - BEDROOM\n\nA young man is lying down in bed under a blanket when he suddenly stops and places his finger against his lips as if shushing someone or something.\n\nHe looks directly at the camera with an expression that's difficult to read \u2014 part contemplative, part mysterious.\n\nThe room is dimly lit by what appears to be ambient light from off-camera, creating soft shadows on his face. The overall mood feels private and introspective, suggesting a moment of reflection before bed or perhaps a secret shared only with the viewer.",
+  "model_used_stage1": "llama3.2:latest",
+  "model_used_stage2": "minicpm-v:latest",
+  "image_path": "temp_uploads\\35cbfc75-9798-4ccf-9646-c1298b7be57c_Screenshot 2026-02-22 045547.png",
+  "pipeline_history": [
+    {
+      "stage": "stage1_director",
+      "timestamp": "2026-02-21T23:25:59.819876",
+      "output_keys": [
+        "stage1_output",
+        "model_used_stage1",
+        "status"
+      ]
+    },
+    {
+      "stage": "stage2_vision",
+      "timestamp": "2026-02-21T23:27:13.301487",
+      "output_keys": [
+        "stage2_output",
+        "visual_description",
+        "model_used_stage2",
+        "image_path",
+        "final_screenplay",
+        "status"
+      ]
+    }
+  ],
+  "errors": []
+}

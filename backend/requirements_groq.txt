@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
+groq==0.11.0
+PyMuPDF==1.24.13
+python-docx==1.1.2
+spacy==3.8.2
+chromadb==0.5.20
+transformers==4.46.3
+torch==2.5.1
+pydantic==2.10.3
+pydantic-settings==2.6.1

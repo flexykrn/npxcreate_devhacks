@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/AppContext";
 import { updateNode } from "@/lib/localDb";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 const STICKERS = ["⭐","🌈","❤️","🎯","💡","🔥","✅","📌","🎵","🦋","🌸","🏆","✨","🎨","🚀"];
 const INK_COLORS = [
@@ -33,6 +33,8 @@ export default function NotebookPage() {
   const [dragging, setDragging] = useState<{ id: number; ox: number; oy: number } | null>(null);
   const [nodeTitle, setNodeTitle] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [enhanceError, setEnhanceError] = useState("");
 
   const pageInnerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -126,6 +128,41 @@ export default function NotebookPage() {
     }
   };
 
+  const enhancePage = async () => {
+    if (!page.text.trim()) return;
+    setIsEnhancing(true);
+    setEnhanceError("");
+    try {
+      const res = await fetch("http://localhost:8080/api/v1/process-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: page.text,
+          session_id: currentProject?.id || "default",
+        }),
+      });
+      if (!res.ok) throw new Error(`Backend error: ${res.status}`);
+      const data = await res.json();
+      // Extract enhanced text from response
+      const enhanced =
+        data?.enhanced_script ||
+        data?.result?.enhanced_script ||
+        data?.scenes?.map((s: { content?: string; text?: string }) => s.content || s.text || "").join("\n\n") ||
+        data?.content ||
+        "";
+      if (enhanced) {
+        updatePage({ text: enhanced });
+      } else {
+        setEnhanceError("AI returned empty response. Try again.");
+      }
+    } catch (err) {
+      setEnhanceError("Could not reach AI backend. Is it running on port 8080?");
+      console.error(err);
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
+
   const onStickerMouseDown = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -215,8 +252,32 @@ export default function NotebookPage() {
           <button onClick={() => window.print()} className="bg-white border-2 border-gray-300 rounded-lg px-3 py-1.5 text-sm text-gray-700 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all">
             🖨 Print
           </button>
+          <div className="w-px h-7 bg-gray-300 mx-1" />
+          <button
+            onClick={enhancePage}
+            disabled={isEnhancing || !page.text.trim()}
+            className="flex items-center gap-1.5 border-2 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{
+              background: isEnhancing ? "#7c3aed" : "linear-gradient(135deg, #7c3aed, #c026d3)",
+              color: "#fff",
+              borderColor: "#7c3aed",
+            }}
+            title="Enhance with AI (Groq)"
+          >
+            <Sparkles size={14} />
+            {isEnhancing ? "Enhancing…" : "AI Enhance"}
+          </button>
         </div>
       </div>
+
+      {/* ── AI Error Banner ── */}
+      {enhanceError && (
+        <div className="w-full max-w-215 mb-3 px-4 py-2 rounded-lg text-sm font-medium"
+          style={{ background: "#fef2f2", border: "1px solid #fca5a5", color: "#dc2626" }}>
+          ⚠️ {enhanceError}
+          <button onClick={() => setEnhanceError("")} className="ml-3 underline text-xs">dismiss</button>
+        </div>
+      )}
 
       {/* ── Notebook ── */}
       <div
