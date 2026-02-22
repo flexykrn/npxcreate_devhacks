@@ -1,0 +1,33 @@
+# ScriptED Backend - Production Dependencies
+
+# Core Framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Async File Operations
+aiofiles==24.1.0
+
+# NLP & ML Models
+spacy==3.7.5
+sentence-transformers==3.1.1
+transformers==4.45.2
+torch==2.4.1
+accelerate==0.34.2
+bitsandbytes==0.44.0
+
+# Embeddings & Similarity
+scikit-learn==1.5.2
+numpy==1.26.4
+
+# Image Processing
+Pillow==10.4.0
+
+# Optional: Redis for Production
+# redis==5.0.8
+# redis-om==0.2.1
+
+# Development
+python-dotenv==1.0.1

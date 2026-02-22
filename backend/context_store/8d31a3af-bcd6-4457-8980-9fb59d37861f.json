@@ -1,0 +1,45 @@
+{
+  "session_id": "8d31a3af-bcd6-4457-8980-9fb59d37861f",
+  "created_at": "2026-02-22T00:06:58.343898",
+  "updated_at": "2026-02-22T00:07:43.624764",
+  "status": "completed",
+  "raw_script": "transfom",
+  "tone_target": "Dramatic",
+  "product_context": null,
+  "scene_image_path": null,
+  "parsed_structure": null,
+  "embeddings": null,
+  "analysis_results": null,
+  "enhanced_dialogues": null,
+  "final_screenplay": "I'm ready to help you enhance your screenplay. However, I don't see a raw screenplay text provided. Please share the screenplay with me, and I'll get started on integrating the visual description into the appropriate scenes.\n\nOnce I receive the screenplay, I'll follow industry-standard formatting guidelines and make enhancements to improve its cinematic quality, pacing, and visual storytelling.",
+  "stage1_output": "I'm happy to help you with enhancing your screenplay. However, I notice that the raw screenplay text is not provided. Please provide the raw screenplay text, and I'll be happy to assist you in transforming it into an industry-standard format while improving its cinematic quality.\n\nOnce I receive the raw screenplay text, I'll follow the critical rules you provided and enhance it accordingly. My output will include:\n\n1. Industry-standard formatting with proper scene headings, character names, parentheticals, action lines, and spacing.\n2. Enhanced dialogue that is more natural, conversational, and layered with subtext.\n3. Improved action lines that are visually descriptive, concise, and focused on what the camera sees.\n4. Professional polish, including pacing, visual storytelling, cinematic language, and director-friendly descriptions.\n5. No additions of camera directions, production notes, internal monologues, or new content beyond the original story.\n\nPlease provide the raw screenplay text, and I'll get started on transforming it into an industry-standard format that's ready for production consideration.",
+  "stage2_output": "I'm ready to help you enhance your screenplay. However, I don't see a raw screenplay text provided. Please share the screenplay with me, and I'll get started on integrating the visual description into the appropriate scenes.\n\nOnce I receive the screenplay, I'll follow industry-standard formatting guidelines and make enhancements to improve its cinematic quality, pacing, and visual storytelling.",
+  "visual_description": "\"Characters meander down a leaf-strewn red earth path, bordered by towering green bushes. The late morning sunlight filters through the foliage, casting dappled shadows across their figures. A solitary bench sits invitingly beside the walkway; its worn wooden slats and metal frame hinting at many seasons of weathered use. The scene is tranquil yet alive with subtle human interactions.\"",
+  "model_used_stage1": "llama3.2:latest",
+  "model_used_stage2": "minicpm-v:latest",
+  "image_path": "temp_uploads\\8d31a3af-bcd6-4457-8980-9fb59d37861f_Screenshot (98).png",
+  "pipeline_history": [
+    {
+      "stage": "stage1_director",
+      "timestamp": "2026-02-22T00:07:04.202886",
+      "output_keys": [
+        "stage1_output",
+        "model_used_stage1",
+        "status"
+      ]
+    },
+    {
+      "stage": "stage2_vision",
+      "timestamp": "2026-02-22T00:07:43.624756",
+      "output_keys": [
+        "stage2_output",
+        "visual_description",
+        "model_used_stage2",
+        "image_path",
+        "final_screenplay",
+        "status"
+      ]
+    }
+  ],
+  "errors": []
+}
