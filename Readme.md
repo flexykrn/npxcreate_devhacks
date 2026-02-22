@@ -20,7 +20,7 @@ ScriptED is an AI-powered screenplay enhancement tool that uses a **3-stage pipe
 3. **STAGE 3**: AI Enhancement - Use specialized agents to enhance specific elements
 
 ### 🤖 Core Technology
-- **LLM**: Groq's llama-3.1-8b-instant (ultra-fast inference)
+- **LLM**: Local Llama-3.1-8b running on CPU (fully offline)
 - **Vector DB**: ChromaDB for semantic search
 - **Sentiment Analysis**: DistilBERT
 - **NLP**: spaCy for text processing
@@ -50,21 +50,22 @@ python -m venv venv
 .\venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements_groq.txt
+pip install -r requirements.txt
 
 # Download spaCy model
 python -m spacy download en_core_web_sm
 
 # Test backend
-python main_groq.py
+python main.py
 ```
 
 **Expected Output**:
 ```
-🚀 Booting up ScriptED Backend with Groq...
+🚀 Booting up ScriptED Backend (Local Mode)...
 Loading spaCy NLP engine...
 Loading local ChromaDB Client...
 Loading DistilBERT Sentiment Analyzer...
+Loading Local LLM Model...
 INFO:     Uvicorn running on http://127.0.0.1:8080
 ```
 
@@ -126,7 +127,7 @@ You should see a **single blue node** labeled "Upload Script".
 3. Click "Process Script"
 
 **What Happens**:
-- Groq LLM cleans and formats the text
+- Local LLM cleans and formats the text
 - Parser extracts scenes, dialogues, and actions
 - ChromaDB creates vector embeddings
 - Sentiment analysis adds emotion tags
@@ -186,6 +187,8 @@ curl -X POST http://localhost:8080/api/v1/pipeline/stage3-agent-handoff `
 curl -X POST http://localhost:8080/api/v1/pipeline/stage3-agent-handoff `
   -H "Content-Type: application/x-www-form-urlencoded" `
   -d "session_id=session_123&persona=director_horror&user_feedback=Make it terrifying"
+
+# Note: All processing happens locally on your machine
 ```
 
 ---
@@ -377,8 +380,8 @@ GET /health
 ```json
 {
   "status": "healthy",
-  "model": "llama-3.1-8b-instant",
-  "groq_api_configured": true,
+  "model": "llama-3.1-8b-local",
+  "local_llm_loaded": true,
   "spacy_loaded": true,
   "sentiment_loaded": true
 }
@@ -448,16 +451,16 @@ GET /session/{session_id}
 ### 4. Performance
 - Files > 10MB may be slow
 - Use text input for faster processing
-- Groq API has rate limits (check dashboard)
+- All processing happens locally (no internet required)
 
 ---
 
 ## 🐛 Troubleshooting
 
 ### Backend Won't Start
-**Error**: `ModuleNotFoundError: No module named 'groq'`
+**Error**: `ModuleNotFoundError: No module named 'transformers'`
 ```powershell
-pip install -r requirements_groq.txt
+pip install -r requirements.txt
 ```
 
 **Error**: `Can't find model 'en_core_web_sm'`
@@ -476,9 +479,9 @@ npm install
 - Check session ID is correct
 - Restart backend (sessions are in-memory)
 
-**Error**: `500 Groq API Error`
-- Check API key in `main_groq.py` line 31
-- Verify Groq account has credits
+**Error**: `500 LLM Loading Error`
+- Ensure you have at least 8GB RAM free
+- Local LLM model takes 30-60 seconds to load on first run
 
 ### Node UI Issues
 **Problem**: Nodes not draggable
